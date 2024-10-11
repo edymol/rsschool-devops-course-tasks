@@ -24,6 +24,9 @@ jobs:
           role-to-assume: arn:aws:iam::981603173951:role/GithubActionsRole
           aws-region: us-east-1
 
+      - name: Set environment variables
+        run: echo "TF_VAR_kms_key_id=${{ secrets.KMS_KEY_ID }}" >> $GITHUB_ENV
+
       - name: Terraform Init
         run: terraform init
 
