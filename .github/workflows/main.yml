@@ -30,12 +30,13 @@ jobs:
           STATE_FILE_KEY: "dev/terraform.tfstate"
           AWS_REGION: "us-east-1"
           KMS_KEY_ID: ${{ secrets.KMS_KEY_ID }}
-        run: terraform init \
-          -backend-config="bucket=${BUCKET_NAME}" \
-          -backend-config="key=${STATE_FILE_KEY}" \
-          -backend-config="region=${AWS_REGION}" \
-          -backend-config="encrypt=true" \
-          -backend-config="kms_key_id=${KMS_KEY_ID}"
+        run: |
+          terraform init \
+            -backend-config="bucket=${BUCKET_NAME}" \
+            -backend-config="key=${STATE_FILE_KEY}" \
+            -backend-config="region=${AWS_REGION}" \
+            -backend-config="encrypt=true" \
+            -backend-config="kms_key_id=${KMS_KEY_ID}"
 
       - name: Terraform Plan
         run: terraform plan
