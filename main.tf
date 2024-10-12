@@ -6,7 +6,7 @@ terraform {
     region     = "us-east-1"
     encrypt    = true
     #kms_key_id = var.kms_key_id
-    kms_key_id = "arn:aws:kms:us-east-1:981603173951:key/9b635d6c-6033-49ad-bee4-7c6a52f02a0f"
+    kms_key_id = var.kms_key_id
   }
 }
 
