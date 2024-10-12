@@ -14,20 +14,20 @@ The logfile of a workflow is also attached as part of the PR.
 
 # Task 2 
 
-AWS Kubernetes VPC Setup with Terraform
+### AWS Kubernetes VPC Setup with Terraform
 This Terraform configuration sets up the foundational networking infrastructure required for deploying a Kubernetes (K8s) cluster on AWS. The configuration provisions a Virtual Private Cloud (VPC) along with public and private subnets, Internet Gateway, NAT Gateway, route tables, security groups, and an S3 bucket for storing the Terraform state.
 
-Project Overview
-This project creates the following AWS resources:
+#### Project Overview
+- This project creates the following AWS resources:
 
-VPC: A Virtual Private Cloud (VPC) with a custom CIDR block.
-Subnets: Two public subnets and two private subnets, each distributed across different availability zones.
-Internet Gateway (IGW): Provides internet access to the public subnets.
-NAT Gateway: Allows instances in private subnets to connect to the internet while remaining inaccessible from the outside.
-Route Tables: Routes network traffic to the appropriate destinations for public and private subnets.
-Security Groups: Security rules to control inbound and outbound traffic for the public and private instances.
-S3 Bucket: A bucket to store the Terraform state file and enable versioning and lifecycle policies.
-AWS Resources Provisioned
+## VPC: A Virtual Private Cloud (VPC) with a custom CIDR block.
+- Subnets: Two public subnets and two private subnets, each distributed across different availability zones.
+- Internet Gateway (IGW): Provides internet access to the public subnets.
+- NAT Gateway: Allows instances in private subnets to connect to the internet while remaining inaccessible from the outside.
+- Route Tables: Routes network traffic to the appropriate destinations for public and private subnets.
+- Security Groups: Security rules to control inbound and outbound traffic for the public and private instances.
+- S3 Bucket: A bucket to store the Terraform state file and enable versioning and lifecycle policies.
+### AWS Resources Provisioned
 1. VPC (Virtual Private Cloud)
    CIDR Block: 10.0.0.0/16
    Provides an isolated network for AWS resources.
@@ -67,53 +67,53 @@ AWS Resources Provisioned
    Variables
    The following variables need to be provided to customize the setup:
 
-vpc_cidr: The CIDR block for the VPC (default: 10.0.0.0/16).
-public_subnet_1_cidr: CIDR block for the first public subnet.
-public_subnet_2_cidr: CIDR block for the second public subnet.
-private_subnet_1_cidr: CIDR block for the first private subnet.
-private_subnet_2_cidr: CIDR block for the second private subnet.
-local_ip: Your local IP address for secure SSH access to the private instances.
-You can define these in a terraform.tfvars file, for example:
+### vpc_cidr: The CIDR block for the VPC (default: 10.0.0.0/16).
+### public_subnet_1_cidr: CIDR block for the first public subnet.
+### public_subnet_2_cidr: CIDR block for the second public subnet.
+### private_subnet_1_cidr: CIDR block for the first private subnet.
+### private_subnet_2_cidr: CIDR block for the second private subnet.
+### local_ip: Your local IP address for secure SSH access to the private instances.
+### You can define these in a terraform.tfvars file, for example:
 
-hcl
-Copy code
-local_ip = "192.0.24"
-Commands
-Initialize Terraform:
+- hcl
+- Copy code
+- local_ip = "192.0.24"
+- Commands
+### Initialize Terraform:
 
-bash
-Copy code
-terraform init
-This command initializes the backend and downloads the necessary provider plugins.
+- bash
+- Copy code
+- terraform init
+- - This command initializes the backend and downloads the necessary provider plugins.
 
-Plan the Infrastructure:
+### Plan the Infrastructure:
 
-bash
-Copy code
-terraform plan
-This command shows you the actions Terraform will take to create/update the infrastructure.
+- bash
+- Copy code
+- terraform plan
+- - This command shows you the actions Terraform will take to create/update the infrastructure.
 
-Apply the Infrastructure:
+### Apply the Infrastructure:
 
-bash
-Copy code
-terraform apply
-This command creates/updates the infrastructure. You will be prompted to confirm.
+- bash
+- Copy code
+- terraform apply
+- - This command creates/updates the infrastructure. You will be prompted to confirm.
 
-Destroy the Infrastructure:
+### Destroy the Infrastructure:
 
-bash
-Copy code
-terraform destroy
-This command tears down all the resources defined in the Terraform files.
+- bash
+- Copy code
+- terraform destroy
+- - This command tears down all the resources defined in the Terraform files.
 
-GitHub Actions (CI/CD)
+### GitHub Actions (CI/CD)
 The configuration includes a GitHub Actions workflow for running the Terraform plan and apply commands. The workflow:
 
-Checks the formatting of Terraform files.
-Plans the infrastructure changes.
-Applies the changes to your AWS environment when required.
-Notes
-Ensure that the terraform.tfvars file or sensitive variables (such as your local IP) are not committed to version control by adding them to .gitignore.
-Always run terraform plan before terraform apply to review any infrastructure changes.
+- Checks the formatting of Terraform files.
+- Plans the infrastructure changes.
+- Applies the changes to your AWS environment when required.
+#### Notes
+- Ensure that the terraform.tfvars file or sensitive variables (such as your local IP) are not committed to version control by adding them to .gitignore.
+- Always run terraform plan before terraform apply to review any infrastructure changes.
 
