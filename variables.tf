@@ -39,16 +39,21 @@ variable "private_subnet_4_cidr" {
 # Availability Zones
 variable "az_1" {
   description = "First Availability Zone (AZ) for subnets"
-  default     = "us-east-1a"  # Update based on your preferred region
+  default     = "eu-west-1a"  # Update based on your preferred region
 }
 
 variable "az_2" {
   description = "Second Availability Zone (AZ) for subnets"
-  default     = "us-east-1b"  # Update based on your preferred region
+  default     = "eu-west-1b"  # Update based on your preferred region
 }
 
 # Local IP Address for SSH Access (for the security group)
 variable "local_ip" {
   description = "Your local IP address for SSH access"
   type        = list(string)
+}
+
+variable "kms_key_id" {
+  description = "KMS Key ID for S3 encryption"
+  type        = string
 }

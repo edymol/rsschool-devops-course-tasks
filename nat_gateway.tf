@@ -1,6 +1,6 @@
 # nat_gateway.tf
 resource "aws_eip" "nat_eip" {
-  domain = "vpc"  # Use domain attribute instead of vpc = true because it is deprecated
+  # No need to define domain, it will be handled by AWS.
 }
 
 resource "aws_nat_gateway" "nat_gw" {
