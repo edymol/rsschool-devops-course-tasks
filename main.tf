@@ -1,4 +1,6 @@
-# Configure the backend to store the Terraform state in an S3 bucket
+provider "aws" {
+  region = "eu-west-1"
+}
 
 terraform {
   backend "s3" {
@@ -18,48 +20,10 @@ terraform {
   }
 }
 
-provider "aws" {
-  region = "eu-west-1"
+output "kops_state_store" {
+  value = "s3://${aws_s3_bucket.kops_state_store.bucket}"
 }
 
-
-# AWS provider configuration
-# provider "aws" {
-#   region = "us-east-1"
-# }
-#
-# # AWS S3 bucket resource definition
-# resource "aws_s3_bucket" "example" {
-#   bucket = "terraform-rs-school-state-devops-bucket" # Updated to a unique bucket name
-#
-#   versioning {
-#     enabled = true
-#   }
-#
-#   lifecycle_rule {
-#     enabled = true
-#     noncurrent_version_expiration {
-#       days = 30
-#     }
-#   }
-# }
-#
-# # AWS S3 bucket policy definition to allow public read access
-# resource "aws_s3_bucket_policy" "example_policy" {
-#   bucket = aws_s3_bucket.example.id
-#
-#   policy = jsonencode({
-#     Version = "2012-10-17",
-#     Statement = [{
-#       Action    = "s3:GetObject",
-#       Effect    = "Allow",
-#       Resource  = "${aws_s3_bucket.example.arn}/*", # Correct ARN reference
-#       Principal = "*"
-#     }]
-#   })
-#
-#   # Ensure the bucket is created before applying the policy
-#   depends_on = [
-#     aws_s3_bucket.example
-#   ]
-# }
+output "kops_dns_zone" {
+  value = aws_route53_zone.kops_dns_zone.name
+}
