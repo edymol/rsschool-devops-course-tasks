@@ -1,4 +1,4 @@
 .env
 .terraform/
-terraform.tfvar
+terraform.tfvars
 backend-config.hcl

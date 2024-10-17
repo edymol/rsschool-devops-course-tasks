@@ -1,42 +1,39 @@
-name: Terraform CI
+name: Deploy K8s Cluster
 
 on:
   push:
     branches:
-      - main
-  pull_request:
-
-permissions:
-  id-token: write
-  contents: read
+      - task-3
 
 jobs:
   terraform:
-    name: 'Terraform Plan'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v3
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v1
         with:
-          role-to-assume: arn:aws:iam::981603173951:role/GithubActionsRole
-          aws-region: us-east-1
+          terraform_version: 1.0.0
 
       - name: Terraform Init
-        env:
-          BUCKET_NAME: ${{ secrets.BUCKET_NAME }}
-          STATE_FILE_KEY: "dev/terraform.tfstate"
-          AWS_REGION: "us-east-1"
-          KMS_KEY_ID: ${{ secrets.KMS_KEY_ID }}
-        run: |
-          terraform init \
-            -backend-config="bucket=${BUCKET_NAME}" \
-            -backend-config="key=${STATE_FILE_KEY}" \
-            -backend-config="region=${AWS_REGION}" \
-            -backend-config="encrypt=true" \
-            -backend-config="kms_key_id=${KMS_KEY_ID}"
+        run: terraform init
 
-      - name: Terraform Plan
-        run: terraform plan
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
+
+  setup_k8s:
+    needs: terraform
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install kOps
+        run: |
+          curl -Lo kops https://github.com/kubernetes/kops/releases/download/v1.21.1/kops-linux-amd64
+          chmod +x kops
+          sudo mv kops /usr/local/bin/
+
+      - name: kOps Cluster Deployment
+        run: |
+          kops create cluster --name=mycluster.k8s.local --zones=us-east-1a --yes
+          kops update cluster --name mycluster.k8s.local --yes
