@@ -1,4 +1,4 @@
-# rsschool-devops-course-tasks
+# rs-school-devops-course-tasks
 
 
 # Terraform Plan Summary for Kubernetes Cluster Setup

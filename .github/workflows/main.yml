@@ -3,7 +3,7 @@ name: Deploy K8s Cluster
 on:
   push:
     branches:
-      - task-3
+      - task-3.1
 
 jobs:
   terraform:
