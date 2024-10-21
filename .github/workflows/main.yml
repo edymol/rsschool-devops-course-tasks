@@ -16,7 +16,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v2
         with:
           role-to-assume: arn:aws:iam::981603173951:role/GithubActionsRole
-          aws-region: us-east-1
+          aws-region: eu-west-1
 
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v1
@@ -37,7 +37,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v2
         with:
           role-to-assume: arn:aws:iam::981603173951:role/GithubActionsRole
-          aws-region: us-east-1
+          aws-region: eu-west-1
 
       - name: Install kOps
         run: |
@@ -48,5 +48,5 @@ jobs:
       - name: kOps Cluster Deployment
         run: |
           export KOPS_STATE_STORE=s3://your-s3-bucket-name
-          kops create cluster --name=mycluster.k8s.local --zones=us-east-1a --yes
+          kops create cluster --name=mycluster.k8s.local --zones=eu-west-1a --yes
           kops update cluster --name mycluster.k8s.local --yes
