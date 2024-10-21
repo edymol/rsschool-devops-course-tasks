@@ -1,5 +1,3 @@
-# variables.tf
-
 variable "vpc_cidr" {
   description = "CIDR block for the VPC"
   default     = "10.0.0.0/16"
@@ -46,22 +44,17 @@ variable "key_name" {
   default     = "rs-school-eu"
 }
 
-variable "kms_key_id" {
-  description = "KMS Key ID for encryption"
-  type        = string
-}
-
-variable "k8s_domain" {
-  description = "Domain name for kOps-managed Kubernetes cluster"
-  default     = "k8s.yourdomain.com"  # Replace with your actual domain or subdomain
-}
-
 variable "kops_s3_bucket" {
   description = "S3 bucket for storing kOps cluster state"
-  default     = "kops-state-store-rs-school"
+  default     = "terraform-rs-school-state-devops-bucket-k8-1"
 }
 
 variable "my_ip_cidr" {
   description = "Your IP range for SSH access"
   default     = "0.0.0.0/0"  # Replace with your actual IP or IP range
+}
+
+variable "kms_key_id" {
+  description = "KMS Key ID for encryption"
+  type        = string
 }

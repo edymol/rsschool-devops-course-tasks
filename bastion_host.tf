@@ -1,29 +1,25 @@
-# bastion.tf
+# resource "aws_security_group" "bastion_sg" {
+#   vpc_id = aws_vpc.k8s_vpc.id
+#
+#   ingress {
+#     from_port   = 22
+#     to_port     = 22
+#     protocol    = "tcp"
+#     cidr_blocks = [var.my_ip_cidr]  # Your IP range for SSH access
+#   }
+#
+#   egress {
+#     from_port   = 0
+#     to_port     = 0
+#     protocol    = "-1"
+#     cidr_blocks = ["0.0.0.0/0"]
+#   }
+#
+#   tags = {
+#     Name = "BastionHostSG"
+#   }
+# }
 
-# Bastion Host Security Group
-resource "aws_security_group" "bastion_sg" {
-  vpc_id = aws_vpc.k8s_vpc.id
-
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = [var.my_ip_cidr]  # Your IP range for SSH access
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags = {
-    Name = "BastionHostSG"
-  }
-}
-
-# Bastion Host EC2 Instance
 resource "aws_instance" "bastion_host_rs" {
   ami           = "ami-008d05461f83df5b1"  # Amazon Linux 2 Free Tier Eligible
   instance_type = "t2.micro"

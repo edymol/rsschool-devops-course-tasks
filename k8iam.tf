@@ -1,6 +1,3 @@
-# iam.tf
-
-# IAM Role for kOps Cluster Management
 resource "aws_iam_role" "kops_role" {
   name = "kops-role"
 
@@ -20,7 +17,6 @@ resource "aws_iam_role" "kops_role" {
 EOF
 }
 
-# Attach Policy to Role
 resource "aws_iam_role_policy_attachment" "kops_role_attach" {
   role       = aws_iam_role.kops_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2FullAccess"

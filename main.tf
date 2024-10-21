@@ -25,7 +25,7 @@ output "kops_state_store" {
   value = "s3://${aws_s3_bucket.example.bucket}"
 }
 
-# Ensure Route53 Zone is defined before using it in outputs
-output "kops_dns_zone" {
-  value = aws_route53_zone.kops_dns_zone.name
-}
+# # Ensure Route53 Zone is defined before using it in outputs
+# output "kops_dns_zone" {
+#   value = aws_route53_zone.kops_dns_zone.name
+# }
