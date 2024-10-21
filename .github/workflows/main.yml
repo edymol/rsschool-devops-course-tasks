@@ -38,6 +38,7 @@ jobs:
         with:
           role-to-assume: arn:aws:iam::981603173951:role/GithubActionsRole
           aws-region: eu-west-1
+          audience: sts.amazonaws.com
 
       - name: Install kOps
         run: |
