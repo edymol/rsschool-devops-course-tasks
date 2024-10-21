@@ -1,29 +1,23 @@
-resource "aws_s3_bucket" "kops_state_store" {
-  bucket = "kops-state-store-rs-school"
-
-  tags = {
-    Name = "Kops State Store"
-  }
-}
-
-# Define ACL separately
-resource "aws_s3_bucket_acl" "kops_state_store_acl" {
-  bucket = aws_s3_bucket.kops_state_store.id
-  acl    = "private"
-}
+# resource "aws_s3_bucket" "kops_state_store" {
+#   bucket = "kops-state-store-rs-school"
+#
+#   tags = {
+#     Name = "Kops State Store"
+#   }
+# }
 
 # Use a separate resource to handle versioning
-resource "aws_s3_bucket_versioning" "kops_state_store_versioning" {
-  bucket = aws_s3_bucket.kops_state_store.bucket
-
-  versioning_configuration {
-    status = "Enabled"
-  }
-}
+# resource "aws_s3_bucket_versioning" "kops_state_store_versioning" {
+#   bucket = aws_s3_bucket.kops_state_store.bucket
+#
+#   versioning_configuration {
+#     status = "Enabled"
+#   }
+# }
 
 # Route53 Hosted Zone for kOps cluster
 resource "aws_route53_zone" "kops_dns_zone" {
-  name = "k8s.yourdomain.com"  # Replace with your domain or subdomain name
+  name = "k8s.digiaxix.com"
   tags = {
     Name = "K8s DNS Zone"
   }
