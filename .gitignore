@@ -1,0 +1,54 @@
+# ===================================================================
+# Terraform Core Files
+# These files are generated locally and contain state, provider binaries,
+# or sensitive information. They should never be committed.
+# ===================================================================
+
+# Local .terraform directories
+**/.terraform/
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
+
+# Crash log files
+crash.log
+crash.*.log
+
+# Exclude all .tfvars files by default to prevent accidental commitment of secrets.
+# See the note below for how to handle non-sensitive .tfvars files.
+*.tfvars
+*.tfvars.json
+*.auto.tfvars
+*.auto.tfvars.json
+!environments/common/common.tfvars
+
+# Ignore override files as they are usually used for local testing
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Terraform plan files
+*.tfplan
+
+# CLI configuration files
+.terraformrc
+terraform.rc
+
+# ===================================================================
+# Operating System & IDE Files
+# General files that should not be in any repository.
+# ===================================================================
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
