@@ -1,10 +1,7 @@
-# This file DECLARES the "contract" for the dev environment.
-# It says which variables are required.
-
 variable "aws_region" {
   description = "The AWS region to deploy resources in."
   type        = string
-  default     = "eu-west-1" # A default can be set here
+  default     = "eu-west-1"
 }
 
 variable "s3_bucket_name" {
@@ -25,4 +22,14 @@ variable "github_repository" {
 variable "aws_account_id" {
   description = "Your AWS Account ID for the IAM role trust policy."
   type        = string
+}
+
+variable "role_name" {
+  description = "The name of the IAM role for GitHub Actions."
+  type        = string
+}
+
+variable "policy_arns" {
+  description = "List of IAM policy ARNs to attach to the GitHub Actions role."
+  type        = list(string)
 }
