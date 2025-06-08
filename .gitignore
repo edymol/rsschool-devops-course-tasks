@@ -37,6 +37,7 @@ override.tf.json
 terraform.rc
 
 *.backend.conf
+environments/dev/backend.conf
 
 # ===================================================================
 # Operating System & IDE Files
