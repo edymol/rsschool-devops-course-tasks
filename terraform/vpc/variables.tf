@@ -1,29 +1,34 @@
-variable "aws_region" {
-  description = "Stockholm"
+variable "vpc_cidr_block" {
+  description = "CIDR block for the VPC."
   type        = string
-  default     = "eu-north-1"
 }
 
-variable "project_name" {
-  description = "RSchool DevOps"
-  type        = string
-  default     = "my-cloud-app"
-}
-
-variable "environment" {
-  description = "Deployment environment intended for K8s"
-  type        = string
-  default     = "development"
-}
-
-variable "vpc_availability_zones" {
-  description = "Availability zones for the VPC module in eu-north-1."
+variable "public_subnet_cidrs" {
+  description = "CIDR blocks for public subnets."
   type        = list(string)
-  default     = ["eu-north-1a", "eu-north-1b", "eu-north-1c"]
 }
 
-variable "ec2_instance_type" {
-  description = "Instance type for the EC2 instances."
+variable "private_subnet_cidrs" {
+  description = "CIDR blocks for private subnets."
+  type        = list(string)
+}
+
+variable "aws_region" {
+  description = "The AWS region to deploy resources in."
   type        = string
-  default     = "t3.micro"
+}
+
+variable "availability_zones" {
+  description = "List of availability zones to use."
+  type        = list(string)
+}
+
+variable "bastion_ami" {
+  description = "AMI ID for the bastion host."
+  type        = string
+}
+
+variable "instance_type" {
+  description = "Instance type for the bastion host."
+  type        = string
 }

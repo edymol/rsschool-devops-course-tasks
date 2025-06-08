@@ -34,13 +34,13 @@ jobs:
       - name: Create terraform.tfvars
         run: |
           cat << EOF > environments/dev/terraform.tfvars
-          aws_region         = "eu-west-1"
-          s3_bucket_name     = "${{ secrets.TF_S3_BUCKET_NAME }}"
+          aws_region          = "eu-west-1"
+          s3_bucket_name      = "${{ secrets.TF_S3_BUCKET_NAME }}"
           github_organization = "${{ secrets.TF_GITHUB_ORG }}"
           github_repository   = "${{ secrets.TF_GITHUB_REPO }}"
-          aws_account_id     = "${{ secrets.AWS_ACCOUNT_ID }}"
-          role_name          = "GithubActionsRole"
-          policy_arns        = [
+          aws_account_id      = "${{ secrets.AWS_ACCOUNT_ID }}"
+          role_name           = "GithubActionsRole"
+          policy_arns         = [
             "arn:aws:iam::aws:policy/AmazonEC2FullAccess",
             "arn:aws:iam::aws:policy/AmazonEventBridgeFullAccess",
             "arn:aws:iam::aws:policy/AmazonRoute53FullAccess",
@@ -49,6 +49,12 @@ jobs:
             "arn:aws:iam::aws:policy/AmazonVPCFullAccess",
             "arn:aws:iam::aws:policy/IAMFullAccess"
           ]
+          vpc_cidr_block        = "10.0.0.0/16"
+          public_subnet_cidrs   = ["10.0.1.0/24", "10.0.2.0/24"]
+          private_subnet_cidrs  = ["10.0.3.0/24", "10.0.4.0/24"]
+          availability_zones    = ["eu-west-1a", "eu-west-1b"]
+          bastion_ami           = "ami-0f33411e8740e3c70"
+          instance_type         = "t2.micro"
           EOF
       - name: Debug OIDC Token
         run: |
@@ -80,13 +86,13 @@ jobs:
       - name: Create terraform.tfvars
         run: |
           cat << EOF > environments/dev/terraform.tfvars
-          aws_region         = "eu-west-1"
-          s3_bucket_name     = "${{ secrets.TF_S3_BUCKET_NAME }}"
+          aws_region          = "eu-west-1"
+          s3_bucket_name      = "${{ secrets.TF_S3_BUCKET_NAME }}"
           github_organization = "${{ secrets.TF_GITHUB_ORG }}"
           github_repository   = "${{ secrets.TF_GITHUB_REPO }}"
-          aws_account_id     = "${{ secrets.AWS_ACCOUNT_ID }}"
-          role_name          = "GithubActionsRole"
-          policy_arns        = [
+          aws_account_id      = "${{ secrets.AWS_ACCOUNT_ID }}"
+          role_name           = "GithubActionsRole"
+          policy_arns         = [
             "arn:aws:iam::aws:policy/AmazonEC2FullAccess",
             "arn:aws:iam::aws:policy/AmazonEventBridgeFullAccess",
             "arn:aws:iam::aws:policy/AmazonRoute53FullAccess",
@@ -95,6 +101,12 @@ jobs:
             "arn:aws:iam::aws:policy/AmazonVPCFullAccess",
             "arn:aws:iam::aws:policy/IAMFullAccess"
           ]
+          vpc_cidr_block        = "10.0.0.0/16"
+          public_subnet_cidrs   = ["10.0.1.0/24", "10.0.2.0/24"]
+          private_subnet_cidrs  = ["10.0.3.0/24", "10.0.4.0/24"]
+          availability_zones    = ["eu-west-1a", "eu-west-1b"]
+          bastion_ami           = "ami-0f33411e8740e3c70"
+          instance_type         = "t2.micro"
           EOF
       - name: Debug OIDC Token
         run: |
