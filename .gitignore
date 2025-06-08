@@ -36,6 +36,8 @@ override.tf.json
 .terraformrc
 terraform.rc
 
+*.backend.conf
+
 # ===================================================================
 # Operating System & IDE Files
 # General files that should not be in any repository.
