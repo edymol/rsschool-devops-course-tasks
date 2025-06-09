@@ -74,7 +74,7 @@ jobs:
         id: init
         run: |
           terraform -chdir=environments/dev init \
-            -backend-config="kms_key_arn=${{ secrets.TF_KMS_KEY_ARN }}"
+            -backend-config="kms_key_id=${{ secrets.TERRAFORM_BACKEND_KMS_KEY_ID }}"
 
       - name: Terraform Plan
         id: plan
