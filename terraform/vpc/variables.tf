@@ -32,3 +32,14 @@ variable "instance_type" {
   description = "Instance type for the bastion host."
   type        = string
 }
+
+variable "key_name" {
+  description = "The name of the EC2 key pair. If left empty, the bastion host will not be created."
+  type        = string
+  default     = "" # This makes the variable optional
+}
+
+variable "project_name" {
+  description = "The name of the project, used for tagging resources."
+  type        = string
+}

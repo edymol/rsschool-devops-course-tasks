@@ -1,5 +1,3 @@
-# variables.tf for IAM module
-
 variable "role_name" {
   description = "The name of the IAM role for GitHub Actions."
   type        = string
@@ -24,13 +22,9 @@ variable "aws_account_id" {
 variable "policy_arns" {
   description = "A list of IAM policy ARNs to attach to the role."
   type        = list(string)
-  default = [
-    "arn:aws:iam::aws:policy/AmazonEC2FullAccess",
-    "arn:aws:iam::aws:policy/AmazonRoute53FullAccess",
-    "arn:aws:iam::aws:policy/AmazonS3FullAccess",
-    "arn:aws:iam::aws:policy/IAMFullAccess",
-    "arn:aws:iam::aws:policy/AmazonVPCFullAccess",
-    "arn:aws:iam::aws:policy/AmazonSQSFullAccess",
-    "arn:aws:iam::aws:policy/AmazonEventBridgeFullAccess"
-  ]
+}
+
+variable "kms_key_arn" {
+  description = "The ARN of the KMS key."
+  type        = string
 }

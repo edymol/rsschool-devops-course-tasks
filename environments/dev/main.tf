@@ -10,11 +10,13 @@ module "iam_github_role" {
   github_repo    = var.github_repository
   aws_account_id = var.aws_account_id
   policy_arns    = var.policy_arns
+  kms_key_arn    = var.kms_key_arn # This was missing
 }
 
 module "vpc" {
   source = "../../terraform/vpc"
 
+  project_name         = "rsschool-devops"
   vpc_cidr_block       = var.vpc_cidr_block
   public_subnet_cidrs  = var.public_subnet_cidrs
   private_subnet_cidrs = var.private_subnet_cidrs
@@ -22,4 +24,5 @@ module "vpc" {
   availability_zones   = var.availability_zones
   bastion_ami          = var.bastion_ami
   instance_type        = var.instance_type
+  key_name             = var.key_name # This was missing
 }
