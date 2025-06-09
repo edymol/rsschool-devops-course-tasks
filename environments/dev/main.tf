@@ -16,12 +16,12 @@ module "iam_github_role" {
 module "vpc" {
   source = "../../terraform/vpc"
 
-  vpc_cidr_block        = var.vpc_cidr_block
-  public_subnet_cidrs   = var.public_subnet_cidrs
-  private_subnet_cidrs  = var.private_subnet_cidrs
-  aws_region            = var.aws_region
-  availability_zones    = var.availability_zones
-  bastion_ami           = var.bastion_ami
-  instance_type         = var.instance_type
-  project_name          = var.project_name
+  vpc_cidr_block       = var.vpc_cidr_block
+  public_subnet_cidrs  = var.public_subnet_cidrs
+  private_subnet_cidrs = var.private_subnet_cidrs
+  aws_region           = var.aws_region
+  availability_zones   = var.availability_zones
+  bastion_ami          = var.bastion_ami
+  instance_type        = var.instance_type
+  project_name         = var.project_name
 }
