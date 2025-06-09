@@ -68,7 +68,13 @@ variable "instance_type" {
   type        = string
 }
 
-variable "key_name" {
-  description = "Name of the EC2 Key Pair for SSH access."
+variable "project_name" {
+  description = "The name of the project for resource naming."
   type        = string
+  default     = "task2"
 }
+#
+# variable "key_name" {
+#   description = "Name of the EC2 Key Pair for SSH access."
+#   type        = string
+# }

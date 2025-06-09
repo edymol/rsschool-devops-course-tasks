@@ -56,4 +56,6 @@ Thumbs.db
 *.swp
 *.swo
 
+*.pem
+
 template.md
