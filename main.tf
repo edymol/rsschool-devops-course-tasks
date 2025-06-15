@@ -1,14 +1,27 @@
 # Configure the backend to store the Terraform state in an S3 bucket
+
 terraform {
   backend "s3" {
-    bucket     = "terraform-rs-school-state-devops-bucket" # Updated to a unique bucket name
+    bucket     = "terraform-rs-school-state-devops-bucket-k8"
     key        = "dev/terraform.tfstate"
-    region     = "us-east-1"
+    region     = "eu-west-1"
     encrypt    = true
-    #kms_key_id = var.kms_key_id
-    kms_key_id = var.kms_key_id
+  }
+
+  required_version = ">= 1.0.0, < 2.0.0"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 4.0"
+    }
   }
 }
+
+provider "aws" {
+  region = "eu-west-1"
+}
+
 
 # AWS provider configuration
 # provider "aws" {
