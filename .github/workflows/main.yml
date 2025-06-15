@@ -7,8 +7,8 @@ on:
   pull_request:
 
 permissions:
-  id-token: write # Required for OIDC authentication
-  contents: read  # Required to checkout the code
+  id-token: write
+  contents: read
 
 jobs:
   terraform-check:
@@ -59,8 +59,10 @@ jobs:
           public_subnet_cidrs   = ["10.0.1.0/24", "10.0.2.0/24"]
           private_subnet_cidrs  = ["10.0.3.0/24", "10.0.4.0/24"]
           availability_zones    = ["eu-west-1a", "eu-west-1b"]
-          bastion_ami           = "ami-0a8e566d0e6df5b5b"
+          bastion_ami           = "ami-0a8e566d0e6df5b5b" # Updated AMI from your file
           instance_type         = "t2.micro"
+          project_name          = "task2"
+          ec2_ami_id            = "ami-0c1ac8a41498c1a9c" # Ubuntu 24.04 for k3s nodes
           EOF
 
       - name: Configure AWS Credentials
@@ -116,8 +118,10 @@ jobs:
           public_subnet_cidrs   = ["10.0.1.0/24", "10.0.2.0/24"]
           private_subnet_cidrs  = ["10.0.3.0/24", "10.0.4.0/24"]
           availability_zones    = ["eu-west-1a", "eu-west-1b"]
-          bastion_ami           = "ami-0a8e566d0e6df5b5b"
+          bastion_ami           = "ami-0a8e566d0e6df5b5b" # Updated AMI
           instance_type         = "t2.micro"
+          project_name          = "task2"
+          ec2_ami_id            = "ami-0c1ac8a41498c1a9c" # Ubuntu 24.04
           EOF
 
       - name: Configure AWS Credentials

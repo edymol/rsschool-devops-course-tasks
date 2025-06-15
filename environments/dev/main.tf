@@ -25,3 +25,12 @@ module "vpc" {
   instance_type        = var.instance_type
   project_name         = var.project_name
 }
+
+module "ec2_k3s" {
+  source                  = "../../terraform/ec2"
+  ec2_ami_id              = var.ec2_ami_id
+  private_subnet_ids      = module.vpc.private_subnet_ids
+  private_security_group_id = module.vpc.private_security_group_id
+  bastion_key_name        = module.vpc.bastion_key_name
+  project_name            = var.project_name
+}
