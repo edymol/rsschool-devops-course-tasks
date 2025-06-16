@@ -9,7 +9,7 @@ resource "aws_security_group" "public_sg" {
       from_port   = 22
       to_port     = 22
       protocol    = "tcp"
-      cidr_blocks = [format("%s/32", ingress.value)]  # Corrected to use format function
+      cidr_blocks = [format("%s/32", ingress.value)] # Corrected to use format function
     }
   }
 
@@ -30,7 +30,7 @@ resource "aws_security_group" "private_sg" {
       from_port   = 22
       to_port     = 22
       protocol    = "tcp"
-      cidr_blocks = [format("%s/32", ingress.value)]  # Corrected to use format function
+      cidr_blocks = [format("%s/32", ingress.value)] # Corrected to use format function
     }
   }
 

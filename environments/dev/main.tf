@@ -27,11 +27,11 @@ module "vpc" {
 }
 
 module "ec2_k3s" {
-  source                  = "../../terraform/ec2"
-  ec2_ami_id              = var.ec2_ami_id
-  private_subnet_ids      = module.vpc.private_subnet_ids
+  source                    = "../../terraform/ec2"
+  ec2_ami_id                = var.ec2_ami_id
+  private_subnet_ids        = module.vpc.private_subnet_ids
   private_security_group_id = module.vpc.private_security_group_id
-  bastion_key_name        = module.vpc.bastion_key_name
-  project_name            = var.project_name
-  bastion_key_path = "${path.module}/task2-bastion-key.pem"
+  bastion_key_name          = module.vpc.bastion_key_name
+  project_name              = var.project_name
+  bastion_key_path          = "${path.module}/task2-bastion-key.pem"
 }

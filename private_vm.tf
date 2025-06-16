@@ -6,10 +6,10 @@ resource "aws_instance" "private_vm-rs-school" {
   subnet_id              = aws_subnet.private_subnet_1.id
   vpc_security_group_ids = [aws_security_group.private_sg.id]
 
-  key_name = "rs-school-eu"  # Replace with the SSH key pair name
+  key_name = "rs-school-eu" # Replace with the SSH key pair name
 
   tags = {
-    Name = "Private-rs-school"  # Tags for easy identification
+    Name = "Private-rs-school" # Tags for easy identification
   }
 }
 

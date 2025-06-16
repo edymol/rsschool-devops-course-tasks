@@ -8,7 +8,7 @@ resource "aws_security_group" "bastion_sg" {
       from_port   = 22
       to_port     = 22
       protocol    = "tcp"
-      cidr_blocks = [format("%s/32", ingress.value)]  # Correct use of format function
+      cidr_blocks = [format("%s/32", ingress.value)] # Correct use of format function
     }
   }
 
@@ -23,10 +23,10 @@ resource "aws_security_group" "bastion_sg" {
 
 # Add this block for the Bastion Host EC2 instance
 resource "aws_instance" "bastion_host-rs" {
-  ami           = "ami-03d1b2fa19c17c9f1"  # Replace with a valid AMI ID for your region
+  ami           = "ami-03d1b2fa19c17c9f1" # Replace with a valid AMI ID for your region
   instance_type = "t2.micro"
-  subnet_id     = aws_subnet.public_subnet_1.id  # Reference to a public subnet
-  key_name      = "rs-school-eu"  # Use the same key pair you created
+  subnet_id     = aws_subnet.public_subnet_1.id # Reference to a public subnet
+  key_name      = "rs-school-eu"                # Use the same key pair you created
 
   # Attach the security group defined above
   vpc_security_group_ids = [aws_security_group.bastion_sg.id]

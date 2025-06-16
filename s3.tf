@@ -1,6 +1,6 @@
 # AWS S3 bucket resource definition
 resource "aws_s3_bucket" "example" {
-  bucket = "terraform-rs-school-state-devops-bucket-k8"  # Unique bucket name
+  bucket = "terraform-rs-school-state-devops-bucket-k8" # Unique bucket name
 
   tags = {
     Name        = "RS School DevOps S3 Bucket"
@@ -16,7 +16,7 @@ resource "aws_s3_bucket_versioning" "example_versioning" {
   bucket = aws_s3_bucket.example.id
 
   versioning_configuration {
-    status = "Enabled"  # Enable versioning to keep previous versions of objects
+    status = "Enabled" # Enable versioning to keep previous versions of objects
   }
 }
 
@@ -29,7 +29,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "example_lifecycle" {
     status = "Enabled"
 
     expiration {
-      days = 90  # Expire objects after 90 days
+      days = 90 # Expire objects after 90 days
     }
   }
 
@@ -39,7 +39,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "example_lifecycle" {
     status = "Enabled"
 
     abort_incomplete_multipart_upload {
-      days_after_initiation = 7  # Clean up incomplete uploads after 7 days
+      days_after_initiation = 7 # Clean up incomplete uploads after 7 days
     }
   }
 }
@@ -53,12 +53,12 @@ resource "aws_s3_bucket_policy" "example_policy" {
     Statement = [{
       Action    = "s3:GetObject",
       Effect    = "Deny",
-      Resource  = "${aws_s3_bucket.example.arn}/*",  # Deny public access to the bucket
+      Resource  = "${aws_s3_bucket.example.arn}/*", # Deny public access to the bucket
       Principal = "*"
     }]
   })
 
   depends_on = [
-    aws_s3_bucket.example  # Ensure bucket is created before applying the policy
+    aws_s3_bucket.example # Ensure bucket is created before applying the policy
   ]
 }

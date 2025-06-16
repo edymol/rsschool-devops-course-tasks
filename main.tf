@@ -2,10 +2,10 @@
 
 terraform {
   backend "s3" {
-    bucket     = "terraform-rs-school-state-devops-bucket-k8"
-    key        = "dev/terraform.tfstate"
-    region     = "eu-west-1"
-    encrypt    = true
+    bucket  = "terraform-rs-school-state-devops-bucket-k8"
+    key     = "dev/terraform.tfstate"
+    region  = "eu-west-1"
+    encrypt = true
   }
 
   required_version = ">= 1.0.0, < 2.0.0"

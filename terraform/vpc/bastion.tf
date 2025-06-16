@@ -35,13 +35,13 @@ resource "local_file" "private_key_pem" {
 
 # Bastion Host
 resource "aws_instance" "bastion" {
-  count                   = 1 # Always create the bastion with the generated key
-  ami                     = var.bastion_ami
-  instance_type           = var.instance_type
-  subnet_id               = aws_subnet.public[0].id
+  count                       = 1 # Always create the bastion with the generated key
+  ami                         = var.bastion_ami
+  instance_type               = var.instance_type
+  subnet_id                   = aws_subnet.public[0].id
   associate_public_ip_address = true
-  security_groups         = [aws_security_group.bastion_sg.id]
-  key_name                = aws_key_pair.bastion_key.key_name
+  security_groups             = [aws_security_group.bastion_sg.id]
+  key_name                    = aws_key_pair.bastion_key.key_name
 
   tags = {
     Name = "${var.project_name}-bastion-host"
