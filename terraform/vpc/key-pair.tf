@@ -1,3 +1,8 @@
+resource "aws_key_pair" "bastion_key_aws" {
+  key_name   = var.key_name
+  public_key = file("${path.module}/../../environments/dev/${var.key_name}.pub")
+}
+
 # # This tells Terraform we need the "tls" provider to generate keys
 # terraform {
 #   required_providers {

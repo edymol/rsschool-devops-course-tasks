@@ -33,4 +33,5 @@ module "ec2_k3s" {
   private_security_group_id = module.vpc.private_security_group_id
   bastion_key_name        = module.vpc.bastion_key_name
   project_name            = var.project_name
+  bastion_key_path = "${path.module}/task2-bastion-key.pem"
 }

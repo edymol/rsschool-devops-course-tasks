@@ -1,7 +1,7 @@
 variable "ec2_ami_id" {
   description = "AMI ID for the EC2 instances in eu-north-1."
   type        = string
-  default     = "ami-0c1ac8a41498c1a9c" # <-- YOUR UBUNTU 24.04 AMI ID HERE
+  default     = "ami-0152ea7e79f25bb5b" # <-- YOUR UBUNTU 24.04 AMI ID HERE
 }
 
 variable "private_subnet_ids" {
@@ -21,5 +21,10 @@ variable "bastion_key_name" {
 
 variable "project_name" {
   description = "The name of the project for resource naming."
+  type        = string
+}
+
+variable "bastion_key_path" {
+  description = "The absolute path to the .pem file for the bastion key, used for remote-exec."
   type        = string
 }

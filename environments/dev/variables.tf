@@ -83,5 +83,20 @@ variable "project_name" {
 variable "ec2_ami_id" {
   description = "AMI ID for the EC2 instances in eu-west-1."
   type        = string
-  default     = "ami-0c1ac8a41498c1a9c" # Ubuntu 24.04, adjust if needed
+  default     = "ami-0152ea7e79f25bb5b" # Ubuntu 24.04, adjust if needed
+}
+
+variable "eks_cluster_name" {
+  description = "Name of the EKS Cluster"
+  type        = string
+}
+
+variable "eks_node_group_name" {
+  description = "Name of the EKS Node Group"
+  type        = string
+}
+
+variable "eks_node_count" {
+  description = "Number of nodes in the EKS node group"
+  type        = number
 }

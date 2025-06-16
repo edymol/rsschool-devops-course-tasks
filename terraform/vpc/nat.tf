@@ -7,7 +7,7 @@ resource "aws_nat_gateway" "nat_gw" {
   subnet_id     = aws_subnet.public[0].id
 
   tags = {
-    Name = "nat-gateway"
+    Name = "${var.project_name}-nat-gateway"
   }
 }
 

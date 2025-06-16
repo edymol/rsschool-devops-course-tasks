@@ -4,7 +4,7 @@ resource "aws_s3_bucket" "tfstate" {
 
   # This is the correct way to protect the bucket from accidental deletion by Terraform.
   lifecycle {
-    prevent_destroy = true
+    prevent_destroy = false
   }
 }
 
