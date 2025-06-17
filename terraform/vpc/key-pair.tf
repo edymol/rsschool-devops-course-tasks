@@ -1,6 +1,23 @@
-resource "aws_key_pair" "bastion_key_aws" {
-  key_name   = var.key_name
-  public_key = file("${path.module}/../../environments/dev/${var.key_name}.pub")
+# resource "tls_private_key" "bastion_key" {
+#   algorithm = "RSA"
+#   rsa_bits  = 4096
+# }
+#
+# resource "aws_key_pair" "bastion_key_aws" {
+#   key_name   = var.key_name
+#   public_key = tls_private_key.bastion_key.public_key_openssh
+# }
+
+resource "local_file" "bastion_key_pem" {
+  content         = tls_private_key.bastion_key.private_key_pem
+  filename        = "${path.module}/${var.key_name}.pem"
+  file_permission = "0400"
+}
+
+resource "local_file" "bastion_key_pub" {
+  content         = tls_private_key.bastion_key.public_key_openssh
+  filename        = "${path.module}/${var.key_name}.pub"
+  file_permission = "0644"
 }
 
 # # This tells Terraform we need the "tls" provider to generate keys

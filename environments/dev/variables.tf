@@ -100,3 +100,9 @@ variable "eks_node_count" {
   description = "Number of nodes in the EKS node group"
   type        = number
 }
+
+variable "key_name" {
+  description = "The name of the key pair for SSH access."
+  type        = string
+  default     = "task2-bastion-key"
+}

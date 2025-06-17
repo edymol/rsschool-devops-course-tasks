@@ -10,7 +10,7 @@ module "iam_github_role" {
   github_repo    = var.github_repository
   aws_account_id = var.aws_account_id
   policy_arns    = var.policy_arns
-  kms_key_arn    = var.kms_key_arn # This was missing
+  kms_key_arn    = var.kms_key_arn
 }
 
 module "vpc" {
@@ -33,5 +33,18 @@ module "ec2_k3s" {
   private_security_group_id = module.vpc.private_security_group_id
   bastion_key_name          = module.vpc.bastion_key_name
   project_name              = var.project_name
-  bastion_key_path          = "${path.module}/task2-bastion-key.pem"
+  bastion_key_path          = module.vpc.bastion_key_pem_path
+  # bastion_key_path          = "${path.module}/task2-bastion-key.pem"
+}
+
+# Copy keys to environments/dev/ (optional, for workflow use)
+resource "null_resource" "copy_keys" {
+  provisioner "local-exec" {
+    command = <<EOT
+      cp ${module.vpc.bastion_key_pem_path} ${path.module}/${var.key_name}.pem
+      cp ${module.vpc.bastion_key_pub_path} ${path.module}/${var.key_name}.pub
+      chmod 400 ${path.module}/${var.key_name}.pem
+    EOT
+  }
+  depends_on = [module.vpc]
 }

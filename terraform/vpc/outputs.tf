@@ -13,3 +13,11 @@ output "private_security_group_id" {
 output "bastion_key_name" {
   value = aws_key_pair.bastion_key.key_name
 }
+
+output "bastion_key_pem_path" {
+  value = local_file.private_key_pem.filename
+}
+
+output "bastion_key_pub_path" {
+  value = local_file.bastion_key_pub.filename # This may need adjustment if not defined
+}

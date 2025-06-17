@@ -43,3 +43,9 @@ variable "project_name" {
   description = "The name of the project, used for tagging resources."
   type        = string
 }
+
+variable "bastion_key_path" {
+  description = "Path to the SSH private key for the bastion host (optional)."
+  type        = string
+  default     = null
+}
