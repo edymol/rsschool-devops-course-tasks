@@ -1,13 +1,10 @@
 name: 'Deploy Infrastructure on Merge to Main'
 
 on:
-  # Trigger on pull requests targeting the main branch
   pull_request:
     branches:
       - main
     types: [opened, synchronize, reopened, closed]
-
-  # Also allow manual runs
   workflow_dispatch:
 
 env:
@@ -22,7 +19,7 @@ jobs:
   plan:
     name: 'Terraform Plan'
     runs-on: ubuntu-latest
-
+    
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -35,6 +32,18 @@ jobs:
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
+      
+      # ✅ THIS STEP IS CRITICAL AND HAS BEEN ADDED BACK
+      - name: Create terraform.tfvars
+        run: |
+          cat << EOF > ${{ env.TF_WORKING_DIR }}/terraform.tfvars
+          aws_region          = "eu-west-1"
+          s3_bucket_name      = "${{ secrets.S3_BUCKET_NAME }}"
+          github_organization = "${{ secrets.GITHUB_ORG }}"
+          github_repository   = "${{ github.event.repository.name }}"
+          aws_account_id      = "${{ secrets.AWS_ACCOUNT_ID }}"
+          # Add any other variables your project needs
+          EOF
 
       - name: Terraform Init
         run: terraform init
@@ -43,7 +52,7 @@ jobs:
       - name: Terraform Plan
         run: terraform plan -no-color -out=tfplan
         working-directory: ${{ env.TF_WORKING_DIR }}
-
+      
       - name: Upload Terraform Plan
         uses: actions/upload-artifact@v4
         with:
@@ -55,7 +64,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: plan
 
-    # This condition ensures this job ONLY runs when a PR is MERGED to main
     if: |
       github.event_name == 'pull_request' &&
       github.event.action == 'closed' &&
@@ -73,6 +81,18 @@ jobs:
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
+        
+      # ✅ THIS STEP IS CRUCIAL AND HAS BEEN ADDED BACK
+      - name: Create terraform.tfvars
+        run: |
+          cat << EOF > ${{ env.TF_WORKING_DIR }}/terraform.tfvars
+          aws_region          = "eu-west-1"
+          s3_bucket_name      = "${{ secrets.S3_BUCKET_NAME }}"
+          github_organization = "${{ secrets.GITHUB_ORG }}"
+          github_repository   = "${{ github.event.repository.name }}"
+          aws_account_id      = "${{ secrets.AWS_ACCOUNT_ID }}"
+          # Add any other variables your project needs
+          EOF
 
       - name: Download Terraform Plan
         uses: actions/download-artifact@v4
