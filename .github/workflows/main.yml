@@ -1,10 +1,13 @@
-name: Deploy EKS and Configure with Ansible
+name: 'Deploy Infrastructure on Merge to Main'
 
 on:
+  # Trigger on pull requests targeting the main branch
   pull_request:
     branches:
       - main
     types: [opened, synchronize, reopened, closed]
+
+  # Also allow manual runs
   workflow_dispatch:
 
 env:
@@ -34,17 +37,10 @@ jobs:
         uses: hashicorp/setup-terraform@v3
 
       - name: Terraform Init
-        id: init
         run: terraform init
         working-directory: ${{ env.TF_WORKING_DIR }}
 
-      - name: Terraform Validate
-        id: validate
-        run: terraform validate -no-color
-        working-directory: ${{ env.TF_WORKING_DIR }}
-
       - name: Terraform Plan
-        id: plan
         run: terraform plan -no-color -out=tfplan
         working-directory: ${{ env.TF_WORKING_DIR }}
 
@@ -54,11 +50,12 @@ jobs:
           name: tfplan
           path: ${{ env.TF_WORKING_DIR }}/tfplan
 
-  apply-and-configure:
-    name: 'Terraform Apply & Ansible Provision'
+  apply:
+    name: 'Terraform Apply'
     runs-on: ubuntu-latest
     needs: plan
 
+    # This condition ensures this job ONLY runs when a PR is MERGED to main
     if: |
       github.event_name == 'pull_request' &&
       github.event.action == 'closed' &&
@@ -84,20 +81,9 @@ jobs:
           path: ${{ env.TF_WORKING_DIR }}
 
       - name: Terraform Init
-        id: init
         run: terraform init
         working-directory: ${{ env.TF_WORKING_DIR }}
 
       - name: Terraform Apply
-        id: apply
         run: terraform apply -auto-approve tfplan
-        working-directory: ${{ env.TF_WORKING_DIR }}
-
-      - name: Install Ansible
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y ansible
-
-      - name: Run Ansible to Configure Servers
-        run: ansible-playbook -i inventory.ini ansible/playbook.yml
         working-directory: ${{ env.TF_WORKING_DIR }}

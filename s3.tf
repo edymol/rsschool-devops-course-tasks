@@ -1,6 +1,6 @@
 # AWS S3 bucket resource definition
 resource "aws_s3_bucket" "example" {
-  bucket = "terraform-rs-school-state-devops-bucket-k8" # Unique bucket name
+  bucket = "rsschool-devops-tfstate-dev" # Unique bucket name
 
   tags = {
     Name        = "RS School DevOps S3 Bucket"
