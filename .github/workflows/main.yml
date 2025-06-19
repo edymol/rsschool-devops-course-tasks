@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - task-3
+#      - task-3
   pull_request: null
 permissions:
   id-token: write
@@ -52,11 +52,11 @@ jobs:
           public_subnet_cidrs = ["10.0.1.0/24", "10.0.2.0/24"]
           private_subnet_cidrs = ["10.0.3.0/24", "10.0.4.0/24"]
           availability_zones  = ["eu-west-1a", "eu-west-1b"]
-          bastion_ami         = "ami-0a8e566d0e6df5b5b"
+          bastion_ami         = "ami-01f23391a59163da9"
           instance_type       = "t2.micro"
           key_name            = "task3-bastion-key"
           project_name        = "task3"
-          ec2_ami_id          = "ami-0a8e566d0e6df5b5b"
+          ec2_ami_id          = "ami-01f23391a59163da9"
           EOF
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -65,10 +65,12 @@ jobs:
           aws-region: eu-west-1
           audience: sts.amazonaws.com
       - name: Terraform Init
+        id: init
         run: >
           terraform -chdir=environments/dev init \
             -backend-config="kms_key_id=${{ secrets.TERRAFORM_BACKEND_KMS_KEY_ID }}"
       - name: Terraform Plan
+        id: plan
         run: terraform -chdir=environments/dev plan -no-color
   terraform-apply:
     name: Terraform Apply
@@ -103,11 +105,11 @@ jobs:
           public_subnet_cidrs = ["10.0.1.0/24", "10.0.2.0/24"]
           private_subnet_cidrs = ["10.0.3.0/24", "10.0.4.0/24"]
           availability_zones  = ["eu-west-1a", "eu-west-1b"]
-          bastion_ami         = "ami-0a8e566d0e6df5b5b"
+          bastion_ami         = "ami-01f23391a59163da9"
           instance_type       = "t2.micro"
           key_name            = "task3-bastion-key"
           project_name        = "task3"
-          ec2_ami_id          = "ami-0a8e566d0e6df5b5b"
+          ec2_ami_id          = "ami-01f23391a59163da9"
           EOF
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -168,7 +170,7 @@ jobs:
             sed -i "s/127.0.0.1/$(terraform -chdir=environments/dev output -raw k3s_server_private_ip)/g" /tmp/kubeconfig
           EOF
       - name: Save Artifacts for Local Access
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
           name: k3s-access
           path: |
