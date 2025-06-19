@@ -10,12 +10,11 @@ module "iam_github_role" {
   github_repo    = var.github_repository
   aws_account_id = var.aws_account_id
   policy_arns    = var.policy_arns
-  kms_key_arn    = var.kms_key_arn # This was missing
+  kms_key_arn    = var.kms_key_arn
 }
 
 module "vpc" {
-  source = "../../terraform/vpc"
-
+  source               = "../../terraform/vpc"
   vpc_cidr_block       = var.vpc_cidr_block
   public_subnet_cidrs  = var.public_subnet_cidrs
   private_subnet_cidrs = var.private_subnet_cidrs
@@ -24,4 +23,16 @@ module "vpc" {
   bastion_ami          = var.bastion_ami
   instance_type        = var.instance_type
   project_name         = var.project_name
+  key_name             = var.key_name
+}
+
+module "ec2_k3s" {
+  source                    = "../../terraform/ec2"
+  ec2_ami_id                = var.ec2_ami_id
+  private_subnet_ids        = module.vpc.private_subnet_ids
+  private_security_group_id = module.vpc.private_security_group_id
+  bastion_key_name          = module.vpc.bastion_key_name
+  project_name              = var.project_name
+  bastion_private_key       = module.vpc.bastion_private_key
+  bastion_public_ip         = module.vpc.bastion_public_ip
 }

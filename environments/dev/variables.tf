@@ -73,8 +73,14 @@ variable "project_name" {
   type        = string
   default     = "task2"
 }
-#
-# variable "key_name" {
-#   description = "Name of the EC2 Key Pair for SSH access."
-#   type        = string
-# }
+
+variable "key_name" {
+  description = "Name of the EC2 Key Pair for SSH access."
+  type        = string
+}
+
+variable "ec2_ami_id" {
+  description = "AMI ID for k3s nodes."
+  type        = string
+  default     = "ami-0a8e566d0e6df5b5b" # Ubuntu 24.04 in eu-west-1
+}
