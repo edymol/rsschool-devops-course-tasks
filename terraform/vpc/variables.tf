@@ -43,3 +43,9 @@ variable "project_name" {
   description = "The name of the project, used for tagging resources."
   type        = string
 }
+
+# variable "my_ip" {
+#   description = "Your home or office IP address for SSH access. Must include /32 CIDR notation."
+#   type        = string
+#   sensitive   = true # Good practice to not show the IP in logs
+# }

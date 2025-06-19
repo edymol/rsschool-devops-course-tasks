@@ -4,7 +4,7 @@ resource "aws_s3_bucket" "tfstate" {
 
   # This is the correct way to protect the bucket from accidental deletion by Terraform.
   lifecycle {
-    prevent_destroy = true
+    prevent_destroy = false
   }
 }
 
@@ -24,6 +24,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "tfstate_sse" {
   rule {
     apply_server_side_encryption_by_default {
       sse_algorithm = "AES256"
+      # sse_algorithm     = "aws:kms"
     }
   }
 }
