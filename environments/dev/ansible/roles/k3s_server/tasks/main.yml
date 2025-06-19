@@ -1,0 +1,36 @@
+---
+- name: Install K3s Server
+  ansible.builtin.shell: |
+    curl -sfL https://get.k3s.io | sh -s - --write-kubeconfig-mode 644
+  args:
+    creates: /usr/local/bin/k3s
+
+- name: Wait for K3s Server API to be ready
+  ansible.builtin.wait_for:
+    port: 6443
+    host: "{{ ansible_host }}"
+    timeout: 300
+
+- name: Get K3s Server Token
+  ansible.builtin.shell: sudo cat /var/lib/rancher/k3s/server/token
+  register: k3s_token_output
+  changed_when: false
+
+- name: Set K3s Token Fact
+  ansible.builtin.set_fact:
+    k3s_server_token: "{{ k3s_token_output.stdout }}"
+
+---
+- name: Get K3s Server IP
+  ansible.builtin.set_fact:
+    k3s_server_ip: "{{ hostvars['k3s_server_node']['ansible_host'] }}"
+
+- name: Get K3s Server Token (from server node's fact)
+  ansible.builtin.set_fact:
+    k3s_server_token: "{{ hostvars['k3s_server_node']['k3s_server_token'] }}"
+
+- name: Install K3s Agent
+  ansible.builtin.shell: |
+    curl -sfL https://get.k3s.io | K3S_URL=https://{{ k3s_server_ip }}:6443 K3S_TOKEN={{ k3s_server_token }} sh -s - agent
+  args:
+    creates: /usr/local/bin/k3s
