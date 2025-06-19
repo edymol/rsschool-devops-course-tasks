@@ -82,5 +82,5 @@ variable "key_name" {
 variable "ec2_ami_id" {
   description = "AMI ID for k3s nodes."
   type        = string
-  default     = "ami-0a8e566d0e6df5b5b" # Ubuntu 24.04 in eu-west-1
+  default     = "ami-046da914e42bb0388" # Ubuntu 24.04 in eu-west-1
 }

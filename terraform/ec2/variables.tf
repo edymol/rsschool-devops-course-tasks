@@ -1,7 +1,7 @@
 variable "ec2_ami_id" {
   description = "AMI ID for the EC2 instances in eu-west-1."
   type        = string
-  default     = "ami-0a8e566d0e6df5b5b"
+  default     = "ami-046da914e42bb0388"
 }
 
 variable "private_subnet_ids" {
