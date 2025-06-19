@@ -20,22 +20,25 @@ resource "null_resource" "k3s_token_retriever" {
   provisioner "remote-exec" {
     script = "${path.module}/get_k3s_token.sh"
     connection {
-      type        = "ssh"
-      host        = aws_instance.k3s_server[0].private_ip
-      user        = "ubuntu"
-      private_key = file(var.bastion_key_path)
-      agent       = false
-      timeout     = "10m"
+      type                = "ssh"
+      host                = aws_instance.k3s_server[0].private_ip
+      user                = "ubuntu"
+      private_key         = var.bastion_private_key
+      agent               = false
+      timeout             = "10m"
+      bastion_host        = var.bastion_public_ip
+      bastion_user        = "ubuntu"
+      bastion_private_key = var.bastion_private_key
     }
   }
   provisioner "local-exec" {
-    command = "echo '{\"token\": \"$(ssh -i ${var.bastion_key_path} ubuntu@${aws_instance.k3s_server[0].private_ip} cat /var/lib/rancher/k3s/server/node-token)\"}' > token.json"
+    command = "echo '{\"token\": \"$(ssh -i /tmp/bastion_key.pem -o ProxyCommand='ssh -i /tmp/bastion_key.pem -W %h:%p ubuntu@${var.bastion_public_ip}' ubuntu@${aws_instance.k3s_server[0].private_ip} cat /var/lib/rancher/k3s/server/node-token)\"}' > token.json"
   }
   triggers = { server_id = aws_instance.k3s_server[0].id }
 }
 
 data "external" "k3s_server_token" {
-  program = ["cat", "${path.module}/token.json"]
+  program    = ["cat", "${path.module}/token.json"]
   depends_on = [null_resource.k3s_token_retriever]
 }
 

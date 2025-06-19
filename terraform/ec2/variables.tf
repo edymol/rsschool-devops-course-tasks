@@ -1,7 +1,7 @@
 variable "ec2_ami_id" {
-  description = "AMI ID for the EC2 instances in eu-north-1."
+  description = "AMI ID for the EC2 instances in eu-west-1."
   type        = string
-  default     = "ami-0152ea7e79f25bb5b" # <-- YOUR UBUNTU 24.04 AMI ID HERE
+  default     = "ami-0a8e566d0e6df5b5b"
 }
 
 variable "private_subnet_ids" {
@@ -24,7 +24,13 @@ variable "project_name" {
   type        = string
 }
 
-variable "bastion_key_path" {
-  description = "The absolute path to the .pem file for the bastion key, used for remote-exec."
+variable "bastion_private_key" {
+  description = "The private key for SSH access to the bastion and k3s nodes."
+  type        = string
+  sensitive   = true
+}
+
+variable "bastion_public_ip" {
+  description = "Public IP of the bastion host for SSH proxy."
   type        = string
 }

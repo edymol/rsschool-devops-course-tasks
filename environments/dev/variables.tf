@@ -41,37 +41,31 @@ variable "kms_key_arn" {
 variable "vpc_cidr_block" {
   description = "CIDR block for the VPC."
   type        = string
-  default     = "10.0.0.0/16"
 }
 
 variable "public_subnet_cidrs" {
   description = "CIDR blocks for public subnets."
   type        = list(string)
-  default     = ["10.0.1.0/24", "10.0.2.0/24"]
 }
 
 variable "private_subnet_cidrs" {
   description = "CIDR blocks for private subnets."
   type        = list(string)
-  default     = ["10.0.3.0/24", "10.0.4.0/24"]
 }
 
 variable "availability_zones" {
   description = "List of availability zones to use."
   type        = list(string)
-  default     = ["eu-west-1a", "eu-west-1b"]
 }
 
 variable "bastion_ami" {
   description = "AMI ID for the bastion host."
   type        = string
-  default     = "ami-0f33411e8740e3c70"
 }
 
 variable "instance_type" {
   description = "Instance type for the bastion host."
   type        = string
-  default     = "t2.micro"
 }
 
 variable "project_name" {
@@ -80,29 +74,13 @@ variable "project_name" {
   default     = "task2"
 }
 
-variable "ec2_ami_id" {
-  description = "AMI ID for the EC2 instances in eu-west-1."
-  type        = string
-  default     = "ami-0152ea7e79f25bb5b" # Ubuntu 24.04, adjust if needed
-}
-
-variable "eks_cluster_name" {
-  description = "Name of the EKS Cluster"
-  type        = string
-}
-
-variable "eks_node_group_name" {
-  description = "Name of the EKS Node Group"
-  type        = string
-}
-
-variable "eks_node_count" {
-  description = "Number of nodes in the EKS node group"
-  type        = number
-}
-
 variable "key_name" {
-  description = "The name of the key pair for SSH access."
+  description = "Name of the EC2 Key Pair for SSH access."
   type        = string
-  default     = "task2-bastion-key"
+}
+
+variable "ec2_ami_id" {
+  description = "AMI ID for k3s nodes."
+  type        = string
+  default     = "ami-0a8e566d0e6df5b5b" # Ubuntu 24.04 in eu-west-1
 }

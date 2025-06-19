@@ -14,8 +14,7 @@ module "iam_github_role" {
 }
 
 module "vpc" {
-  source = "../../terraform/vpc"
-
+  source               = "../../terraform/vpc"
   vpc_cidr_block       = var.vpc_cidr_block
   public_subnet_cidrs  = var.public_subnet_cidrs
   private_subnet_cidrs = var.private_subnet_cidrs
@@ -24,6 +23,7 @@ module "vpc" {
   bastion_ami          = var.bastion_ami
   instance_type        = var.instance_type
   project_name         = var.project_name
+  key_name             = var.key_name
 }
 
 module "ec2_k3s" {
@@ -33,18 +33,6 @@ module "ec2_k3s" {
   private_security_group_id = module.vpc.private_security_group_id
   bastion_key_name          = module.vpc.bastion_key_name
   project_name              = var.project_name
-  bastion_key_path          = module.vpc.bastion_key_pem_path
-  # bastion_key_path          = "${path.module}/task2-bastion-key.pem"
-}
-
-# Copy keys to environments/dev/ (optional, for workflow use)
-resource "null_resource" "copy_keys" {
-  provisioner "local-exec" {
-    command = <<EOT
-      cp ${module.vpc.bastion_key_pem_path} ${path.module}/${var.key_name}.pem
-      cp ${module.vpc.bastion_key_pub_path} ${path.module}/${var.key_name}.pub
-      chmod 400 ${path.module}/${var.key_name}.pem
-    EOT
-  }
-  depends_on = [module.vpc]
+  bastion_private_key       = module.vpc.bastion_private_key
+  bastion_public_ip         = module.vpc.bastion_public_ip
 }

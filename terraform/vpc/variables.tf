@@ -44,8 +44,8 @@ variable "project_name" {
   type        = string
 }
 
-variable "bastion_key_path" {
-  description = "Path to the SSH private key for the bastion host (optional)."
-  type        = string
-  default     = null
-}
+# variable "my_ip" {
+#   description = "Your home or office IP address for SSH access. Must include /32 CIDR notation."
+#   type        = string
+#   sensitive   = true # Good practice to not show the IP in logs
+# }
