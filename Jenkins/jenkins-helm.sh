@@ -3,34 +3,23 @@
 # Exit on any error
 set -e
 
-# --- Environment and Prerequisite Checks (No changes needed here) ---
-# ... (The initial functions for checking docker, network, etc., are well-written)
+# --- Environment and Prerequisite Checks ---
 check_docker() {
     echo "Checking Docker status..."
     if ! docker info &> /dev/null; then
         echo "Error: Docker is not running or accessible. Please start Docker and try again."
         exit 1
     fi
-    DOCKER_MEMORY=$(docker info --format '{{.MemTotal}}')
-    DOCKER_CPUS=$(docker info --format '{{.NCPU}}')
-    if [ "$DOCKER_MEMORY" -lt 4294967296 ]; then
-        echo "Warning: Docker has less than 4GB memory allocated. This may be insufficient for Jenkins."
-    fi
-    if [ "$DOCKER_CPUS" -lt 2 ]; then
-        echo "Warning: Docker has less than 2 CPUs allocated."
-    fi
     echo "Docker is running."
 }
 
 check_network() {
     echo "Checking network connectivity..."
-    for url in "https://charts.bitnami.com/bitnami" "https://charts.jenkins.io"; do
-        if ! curl -Is "$url" &> /dev/null; then
-            echo "Error: Cannot reach $url. Check your internet connection or DNS settings."
-            exit 1
-        fi
-    done
-    echo "Network connectivity to chart repositories is OK."
+    if ! curl -Is "https://charts.jenkins.io" &> /dev/null; then
+        echo "Error: Cannot reach https://charts.jenkins.io. Check your internet connection."
+        exit 1
+    fi
+    echo "Network connectivity is OK."
 }
 
 check_and_start_minikube() {
@@ -42,8 +31,8 @@ check_and_start_minikube() {
 
     echo "Checking Minikube cluster status..."
     if ! minikube status | grep -q "apiserver: Running"; then
-        echo "Minikube cluster is not running. Attempting to start..."
-        minikube start --driver=docker --cpus=4 --memory=4096 || { echo "Error: Failed to start Minikube"; exit 1; }
+        echo "Minikube cluster is not running. Attempting to start with recommended resources..."
+        minikube start --driver=docker --cpus=4 --memory=6144 || { echo "Error: Failed to start Minikube"; exit 1; }
         echo "Waiting for cluster to be ready..."
         sleep 30
     fi
@@ -59,55 +48,53 @@ check_network
 check_and_start_minikube
 
 # 2. Clean up previous installations
-echo "Cleaning up any existing resources..."
+echo "Cleaning up any existing Jenkins resources..."
 helm uninstall jenkins --namespace jenkins &> /dev/null || true
-kubectl delete namespace jenkins &> /dev/null || true
-echo "Waiting for namespace to terminate..."
-sleep 15
+# Ensure the namespace is fully terminated before proceeding
+if kubectl get namespace jenkins &> /dev/null; then
+    echo "Waiting for previous jenkins namespace to terminate..."
+    kubectl delete namespace jenkins --wait=true &> /dev/null || true
+fi
+# Also remove the PVC to ensure a completely fresh start
+kubectl delete pvc jenkins --namespace jenkins &> /dev/null || true
 
-# 3. Create Jenkins Helm values file with CORRECTIONS
-echo "Creating Jenkins Helm values file..."
+
+# 3. Create the final Jenkins Helm values file
+echo "Creating final jenkins-values.yaml file..."
 cat << EOF > jenkins-values.yaml
 controller:
-  installPlugins:
-    - kubernetes:4264.v8a_8d225b_1223
-    - workflow-aggregator:596.v8c21d06d92c7
-    - git:5.2.2
-    - configuration-as-code:1810.v9b_50d22e2597
-    - job-dsl:1.87 # <-- FIX 1: Added the required job-dsl plugin
+  # This securityContext fixes file permission errors with local storage
+  persistence:
+    securityContext:
+      fsGroup: 1000
 
+  # Simplified plugin list to let Jenkins handle dependencies
+  installPlugins:
+    - kubernetes
+    - git
+    - workflow-aggregator
+    - configuration-as-code
+    - job-dsl
+
+  # Correct JCasC configuration
   JCasC:
-    enabled: true
     configScripts:
-      hello-world-job: |
+      main-config: |
         jobs:
           - script: >
-              # <-- FIX 2: Corrected the job definition syntax
-              freeStyleJob('hello-world') {
-                description('A simple Hello World freestyle job')
+              freeStyleJob('hello-world-freestyle') {
+                description('A simple freestyle job created by JCasC')
                 steps {
                   shell('echo "Hello world"')
                 }
               }
-      security-config: |
-        securityRealm:
-          local:
-            allowsSignup: false
-        authorizationStrategy:
+        security:
           globalMatrix:
             permissions:
               - "Overall/Administer:admin"
               - "Overall/Read:authenticated"
-              - "Job/Read:authenticated"
               - "Job/Build:authenticated"
-
-  service:
-    type: ClusterIP
-    port: 8080
-
-  persistence:
-    enabled: true
-    size: 4Gi
+              - "Job/Read:authenticated"
 EOF
 
 # 4. Install Jenkins using Helm
@@ -118,7 +105,7 @@ kubectl create namespace jenkins
 helm install jenkins jenkins/jenkins \
   --namespace jenkins \
   -f jenkins-values.yaml \
-  --timeout 10m \
+  --timeout 15m \
   --wait
 
 # 5. Verify the installation
