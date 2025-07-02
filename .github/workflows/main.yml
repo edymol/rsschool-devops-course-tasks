@@ -1,7 +1,11 @@
-name: Deploy Jenkins
+name: Deploy Jenkins with helm
 
 on:
   push:
+    branches:
+      - main
+
+  pull_request:
     branches:
       - main
 
