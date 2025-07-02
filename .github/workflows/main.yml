@@ -1,10 +1,9 @@
-name: Deploy Jenkins with helm
+name: Deploy Jenkins with Helm
 
 on:
   push:
     branches:
       - main
-
   pull_request:
     branches:
       - main
@@ -21,6 +20,16 @@ jobs:
           mkdir -p $HOME/.kube
           echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > $HOME/.kube/config
           chmod 600 $HOME/.kube/config
+          kubectl config view  # Verify kubeconfig
+        env:
+          KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
+
+      - name: Install Helm
+        run: |
+          curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+          chmod +x get_helm.sh
+          ./get_helm.sh
+          helm version
 
       - name: Deploy Jenkins
         run: |
