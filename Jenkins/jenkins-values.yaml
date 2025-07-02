@@ -1,0 +1,36 @@
+---
+controller:
+  persistence:
+    securityContext:
+      fsGroup: 1000
+  installPlugins:
+    - configuration-as-code
+    - job-dsl
+    - matrix-auth
+    - kubernetes
+    - git
+  JCasC:
+    configScripts:
+      main-config: |
+        # The 'jobs' block is a top-level item for the job-dsl plugin
+        jobs:
+          - script: >
+              freeStyleJob('hello-world-freestyle') {
+                steps {
+                  shell('echo "Hello world"')
+                }
+              }
+        # The 'jenkins' block is for core Jenkins configuration
+        jenkins:
+          # All security settings go inside the 'jenkins' block
+          securityRealm:
+            local:
+              allowsSignup: false
+              users:
+                - id: "admin"
+                  password: "password123" # You will change this in the UI
+          authorizationStrategy:
+            globalMatrix:
+              permissions:
+                - "Overall/Administer:admin"
+                - "Overall/Read:authenticated"

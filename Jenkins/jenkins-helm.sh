@@ -61,40 +61,44 @@ kubectl delete pvc jenkins --namespace jenkins &> /dev/null || true
 
 # 3. Create the final Jenkins Helm values file
 echo "Creating final jenkins-values.yaml file..."
+# 3. Create the final Jenkins Helm values file
+echo "Creating final jenkins-values.yaml file..."
 cat << EOF > jenkins-values.yaml
 controller:
-  # This securityContext fixes file permission errors with local storage
   persistence:
     securityContext:
       fsGroup: 1000
-
-  # Simplified plugin list to let Jenkins handle dependencies
   installPlugins:
-    - kubernetes
-    - git
-    - workflow-aggregator
     - configuration-as-code
     - job-dsl
-
-  # Correct JCasC configuration
+    - matrix-auth
+    - kubernetes
+    - git
   JCasC:
     configScripts:
       main-config: |
+        # The 'jobs' block is a top-level item for the job-dsl plugin
         jobs:
           - script: >
               freeStyleJob('hello-world-freestyle') {
-                description('A simple freestyle job created by JCasC')
                 steps {
                   shell('echo "Hello world"')
                 }
               }
-        security:
-          globalMatrix:
-            permissions:
-              - "Overall/Administer:admin"
-              - "Overall/Read:authenticated"
-              - "Job/Build:authenticated"
-              - "Job/Read:authenticated"
+        # The 'jenkins' block is for core Jenkins configuration
+        jenkins:
+          # All security settings go inside the 'jenkins' block
+          securityRealm:
+            local:
+              allowsSignup: false
+              users:
+                - id: "admin"
+                  password: "password123" # You will change this in the UI
+          authorizationStrategy:
+            globalMatrix:
+              permissions:
+                - "Overall/Administer:admin"
+                - "Overall/Read:authenticated"
 EOF
 
 # 4. Install Jenkins using Helm
