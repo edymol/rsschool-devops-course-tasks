@@ -39,4 +39,5 @@ jobs:
             --namespace jenkins \
             --create-namespace \
             -f values.yaml \
-            --ca-file ca.crt # <-- Add this flag to force trust
+            --insecure-skip-tls-verify
+#            --ca-file ca.crt # <-- Add this flag to force trust
