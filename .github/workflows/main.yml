@@ -24,17 +24,19 @@ jobs:
           KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
 
       # --- ADD THIS NEW STEP ---
-      - name: Debug Kubeconfig
+      - name: Extract CA Certificate
         run: |
-          echo "--- Verifying kubeconfig content ---"
-          kubectl config view
-          echo "------------------------------------"
+          echo "--- Extracting CA certificate from kubeconfig ---"
+          kubectl config view --raw --minify -o jsonpath='{.clusters[0].cluster.certificate-authority-data}' | base64 -d > ca.crt
+          echo "CA certificate extracted."
 
       - name: Deploy Jenkins
         run: |
           helm repo add jenkins https://charts.jenkins.io
           helm repo update
+          # --- MODIFY THE HELM COMMAND ---
           helm upgrade --install jenkins jenkins/jenkins \
             --namespace jenkins \
             --create-namespace \
-            -f values.yaml
+            -f values.yaml \
+            --ca-file ca.crt # <-- Add this flag to force trust
