@@ -1,0 +1,49 @@
+# In .github/workflows/destroy.yml
+
+name: 'Destroy Infrastructure'
+
+on:
+  # This allows you to run the workflow manually from the GitHub Actions UI
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type "destroy" to confirm. This is irreversible.'
+        required: true
+        default: 'do-not-destroy'
+
+jobs:
+  terraform-destroy:
+    name: 'Terraform Destroy'
+    runs-on: ubuntu-latest
+
+    # This condition makes it impossible to run without manually typing "destroy"
+    if: github.event.inputs.confirm == 'destroy'
+
+    env:
+      AWS_REGION: eu-west-1 # Make sure this matches your deploy workflow
+      TF_WORKING_DIR: ./infrastructure/environments/dev
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_IAM_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        run: terraform init
+        working-directory: ${{ env.TF_WORKING_DIR }}
+
+      - name: Terraform Destroy
+        run: terraform destroy -auto-approve
+        working-directory: ${{ env.TF_WORKING_DIR }}

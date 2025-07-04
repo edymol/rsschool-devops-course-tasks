@@ -1,42 +1,45 @@
-name: Terraform CI
-
+name: Deploy Jenkins with Helm
 on:
+  pull_request:
+    branches:
+      - main
   push:
     branches:
       - main
-  pull_request:
-
-permissions:
-  id-token: write
-  contents: read
-
 jobs:
-  terraform:
-    name: 'Terraform Plan'
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v3
+        uses: actions/checkout@v4
+      - name: Set up Helm
+        uses: azure/setup-helm@v4
         with:
-          role-to-assume: arn:aws:iam::981603173951:role/GithubActionsRole
-          aws-region: us-east-1
-
-      - name: Terraform Init
-        env:
-          BUCKET_NAME: ${{ secrets.BUCKET_NAME }}
-          STATE_FILE_KEY: "dev/terraform.tfstate"
-          AWS_REGION: "us-east-1"
-          KMS_KEY_ID: ${{ secrets.KMS_KEY_ID }}
+          version: v3.15.4  # Use a recent Helm version
+      - name: Set up Kubeconfig
         run: |
-          terraform init \
-            -backend-config="bucket=${BUCKET_NAME}" \
-            -backend-config="key=${STATE_FILE_KEY}" \
-            -backend-config="region=${AWS_REGION}" \
-            -backend-config="encrypt=true" \
-            -backend-config="kms_key_id=${KMS_KEY_ID}"
-
-      - name: Terraform Plan
-        run: terraform plan
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > $HOME/.kube/config
+          chmod 600 $HOME/.kube/config
+        env:
+          KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
+      - name: Verify Kubeconfig and Certificate
+        run: |
+          # Display KUBECONFIG (sanitized)
+          cat $HOME/.kube/config | grep -v 'client-key-data' | grep -v 'client-certificate-data'
+          # Extract and verify embedded CA certificate
+          grep certificate-authority-data $HOME/.kube/config | awk '{print $2}' | base64 -d > ca_from_kubeconfig.crt
+          openssl x509 -in ca_from_kubeconfig.crt -text -noout
+          # Test Kubernetes connectivity
+          kubectl get nodes
+          # Test API server certificate
+          openssl s_client -connect 0ca7-2a06-5900-c029-b500-b982-d907-7a58-6939.ngrok-free.app:443 -showcerts </dev/null
+      - name: Deploy Jenkins
+        run: |
+          helm repo add jenkins https://charts.jenkins.io
+          helm repo update
+          helm upgrade --install jenkins jenkins/jenkins \
+            --namespace jenkins \
+            --create-namespace \
+            -f values.yaml \
+            --debug
