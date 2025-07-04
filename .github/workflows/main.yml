@@ -1,42 +1,37 @@
-name: Terraform CI
+# .github/workflows/deploy.yml
+
+name: Deploy React App with Helm
 
 on:
   push:
     branches:
       - main
   pull_request:
-
-permissions:
-  id-token: write
-  contents: read
+    branches:
+      - main
 
 jobs:
-  terraform:
-    name: 'Terraform Plan'
+  deploy:
     runs-on: ubuntu-latest
+
     steps:
+      # Step 1: Check out your repository's code
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v3
-        with:
-          role-to-assume: arn:aws:iam::981603173951:role/GithubActionsRole
-          aws-region: us-east-1
-
-      - name: Terraform Init
-        env:
-          BUCKET_NAME: ${{ secrets.BUCKET_NAME }}
-          STATE_FILE_KEY: "dev/terraform.tfstate"
-          AWS_REGION: "us-east-1"
-          KMS_KEY_ID: ${{ secrets.KMS_KEY_ID }}
+      # Step 2: Set up kubectl and authenticate to your cluster
+      - name: Set up Kubeconfig
         run: |
-          terraform init \
-            -backend-config="bucket=${BUCKET_NAME}" \
-            -backend-config="key=${STATE_FILE_KEY}" \
-            -backend-config="region=${AWS_REGION}" \
-            -backend-config="encrypt=true" \
-            -backend-config="kms_key_id=${KMS_KEY_ID}"
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > $HOME/.kube/config
+          chmod 600 $HOME/.kube/config
+        env:
+          # This secret must be created in your GitHub repository settings
+          KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
 
-      - name: Terraform Plan
-        run: terraform plan
+      # Step 3: Deploy the application using your Helm chart
+      - name: Deploy with Helm
+        run: |
+          helm upgrade --install my-react-app ./my-react-chart \
+            --namespace default \
+            --set image.tag=${{ github.sha }} # Best practice: Tag image with the Git commit SHA

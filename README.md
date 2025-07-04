@@ -1,13 +1,24 @@
-# rsschool-devops-course-tasks
+# Jenkins Deployment with Helm and JCasC
 
-## Setup identify provider and GithubActionsRole
+This project contains a script and configuration to automatically deploy a Jenkins instance on a local Minikube cluster.
 
-1. Created a new identity provider for github.
-2. Created a new role with required policy to access my github repo and attached the required permissions. The configuration can be found in iam_role.tf file.
+## Features
 
-### Setup github actions
-1. Created a workflow for github that will be triggered any time we have a PR to main or push to the main branch.
-2. Created repo secrets to store AWS KEY_ID and SECRET.
+- Deploys Jenkins using the official Helm chart.
+- Configures Jenkins using Jenkins Configuration as Code (JCasC).
+- Automatically creates a "Hello World" freestyle job.
+- Sets up matrix-based security for an admin user.
 
-### Confirmed the workflow works.
-The logfile of a workflow is also attached as part of the PR.
+## How to Run
+
+1.  Ensure you have Minikube, Docker, kubectl, and Helm installed.
+2.  Start Minikube: `minikube start`
+3.  Make the script executable: `chmod +x deploy-jenkins.sh`
+4.  Run the script: `./deploy-jenkins.sh`
+
+## Accessing Jenkins
+
+After the script succeeds, run the following command in a new terminal:
+`kubectl --namespace jenkins port-forward svc/jenkins 8080:8080`
+
+Open your browser to `http://localhost:8080`. The admin password will be printed by the script upon successful deployment.

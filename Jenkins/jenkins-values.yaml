@@ -1,0 +1,39 @@
+controller:
+  persistence:
+    securityContext:
+      fsGroup: 1000
+    storageClass: "standard" # Explicitly use Minikube's default
+    size: 5Gi
+
+  # Simplified plugin list for stability, with matrix-auth added
+  installPlugins:
+    - kubernetes
+    - git
+    - job-dsl
+    - configuration-as-code
+    - matrix-auth
+
+  # Correct JCasC configuration
+  JCasC:
+    configScripts:
+      main-config: |
+        jobs:
+          - script: >
+              freeStyleJob('hello-world-freestyle') {
+                description('A simple freestyle job created by JCasC')
+                steps {
+                  shell('echo "Hello world"')
+                }
+              }
+        jenkins:
+          securityRealm:
+            local:
+              allowsSignup: false
+              users:
+                - id: "admin"
+                  password: "password123"
+          authorizationStrategy:
+            globalMatrix:
+              permissions:
+                - "Overall/Administer:admin"
+                - "Overall/Read:authenticated"
