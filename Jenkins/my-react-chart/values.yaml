@@ -1,0 +1,24 @@
+replicaCount: 2
+
+image:
+  repository: edydockers/rsschool
+  pullPolicy: IfNotPresent
+  tag: "latest"
+
+# Add this serviceAccount block to fix the error
+serviceAccount:
+  # We don't need to create a separate service account for this app
+  create: false
+  # If you were to create one, you could specify annotations and a name here
+  annotations: {}
+  name: ""
+
+service:
+  type: ClusterIP
+  port: 9999
+
+# Disable unused features
+ingress:
+  enabled: false
+autoscaling:
+  enabled: false
